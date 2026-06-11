@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html dir="rtl"><head><meta charset="utf-8"><title>نظام أركت - مراجعة الطلبات</title>
+<style>body{font-family:Arial; padding:20px;} textarea{width:100%; height:100px;}</style>
+</head><body>
+    <h2>مراجعة الطلب رقم: <span id="oid"></span></h2>
+    <p id="content">جاري جلب بيانات الطلب...</p>
+    <textarea id="notes" placeholder="اكتب ملاحظاتك هنا..."></textarea><br><br>
+    <button onclick="saveNotes()">إرسال الملاحظات</button>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderID = urlParams.get('OrderID');
+        document.getElementById('oid').innerText = orderID;
+        
+        // ضع هنا رابط الـ Web App الخاص بك (الذي ينتهي بـ /exec)
+        const scriptURL = "https://script.google.com/macros/s/AKfycbyBIBqfCpMShbzyMGJ4cVdN8C1nD5esu1CLXa56xRjs5Aydqz_ggtXot_SXKmVHCaw/exec";
+
+        // جلب البيانات وعرضها
+        fetch(scriptURL + "?OrderID=" + orderID)
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + data.ItemsData;
+            });
+
+        function saveNotes() {
+            alert("تم إرسال الملاحظات بنجاح!");
+            // لاحقاً سنضيف وظيفة التحديث للـ Sheets هنا
+        }
+    </script>
+</body></html>
