@@ -6,25 +6,46 @@
     <p id="content">جاري جلب بيانات الطلب...</p>
     <textarea id="notes" placeholder="اكتب ملاحظاتك هنا..."></textarea><br><br>
     <button onclick="saveNotes()">إرسال الملاحظات</button>
-
-    <script>
+<script>
         const urlParams = new URLSearchParams(window.location.search);
         const orderID = urlParams.get('OrderID');
         document.getElementById('oid').innerText = orderID;
         
-        // ضع هنا رابط الـ Web App الخاص بك (الذي ينتهي بـ /exec)
+        // رابط الـ Web App الثابت الخاص بك
         const scriptURL = "https://script.google.com/macros/s/AKfycbyBIBqfCpMShbzyMGJ4cVdN8C1nD5esu1CLXa56xRjs5Aydqz_ggtXot_SXKmVHCaw/exec";
 
-        // جلب البيانات وعرضها
+        // جلب البيانات وعرضها عند فتح الصفحة
         fetch(scriptURL + "?OrderID=" + orderID)
             .then(r => r.json())
             .then(data => {
                 document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + data.ItemsData;
             });
 
+        // دالة إرسال الملاحظات إلى الـ Google Sheets
         function saveNotes() {
-            alert("تم إرسال الملاحظات بنجاح!");
-            // لاحقاً سنضيف وظيفة التحديث للـ Sheets هنا
+            const notes = document.getElementById('notes').value;
+            if (!notes) { alert("من فضلك اكتب الملاحظات أولاً!"); return; }
+            
+            // إظهار رسالة جاري الإرسال
+            const btn = document.querySelector('button');
+            btn.innerText = "جاري الحفظ...";
+            btn.disabled = true;
+
+            fetch(scriptURL, {
+                method: "POST",
+                mode: "no-cors", // ضروري جداً لتجاوز قيود الـ CORS في جوجل
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ OrderID: orderID, Notes: notes })
+            })
+            .then(() => {
+                alert("تم حفظ الملاحظات في قاعدة البيانات بنجاح!");
+                btn.innerText = "تم الإرسال";
+            })
+            .catch(error => {
+                alert("حدث خطأ أثناء الحفظ، حاول مرة أخرى.");
+                btn.innerText = "إرسال الملاحظات";
+                btn.disabled = false;
+            });
         }
     </script>
 </body></html>
