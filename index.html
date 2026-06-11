@@ -11,38 +11,43 @@
         const orderID = urlParams.get('OrderID');
         document.getElementById('oid').innerText = orderID;
         
-        // رابط الـ Web App الثابت الخاص بك
         const scriptURL = "https://script.google.com/macros/s/AKfycbyBIBqfCpMShbzyMGJ4cVdN8C1nD5esu1CLXa56xRjs5Aydqz_ggtXot_SXKmVHCaw/exec";
 
-        // جلب البيانات وعرضها عند فتح الصفحة
-        fetch(scriptURL + "?OrderID=" + orderID)
-            .then(r => r.json())
-            .then(data => {
-                document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + data.ItemsData;
-            });
+        // تعديل الجلب ليكون cors
+        fetch(scriptURL + "?OrderID=" + orderID, {
+            method: 'GET',
+            mode: 'cors' // هنا التغيير الجوهري
+        })
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + data.ItemsData;
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById('content').innerHTML = "خطأ في جلب البيانات. تأكد من عمل Deploy للسكربت.";
+        });
 
-        // دالة إرسال الملاحظات إلى الـ Google Sheets
+        // دالة الإرسال (تبقى كما هي)
         function saveNotes() {
             const notes = document.getElementById('notes').value;
             if (!notes) { alert("من فضلك اكتب الملاحظات أولاً!"); return; }
             
-            // إظهار رسالة جاري الإرسال
             const btn = document.querySelector('button');
             btn.innerText = "جاري الحفظ...";
             btn.disabled = true;
 
             fetch(scriptURL, {
                 method: "POST",
-                mode: "no-cors", // ضروري جداً لتجاوز قيود الـ CORS في جوجل
+                mode: "no-cors", 
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ OrderID: orderID, Notes: notes })
             })
             .then(() => {
-                alert("تم حفظ الملاحظات في قاعدة البيانات بنجاح!");
+                alert("تم حفظ الملاحظات بنجاح!");
                 btn.innerText = "تم الإرسال";
             })
-            .catch(error => {
-                alert("حدث خطأ أثناء الحفظ، حاول مرة أخرى.");
+            .catch(() => {
+                alert("حدث خطأ، حاول مرة أخرى.");
                 btn.innerText = "إرسال الملاحظات";
                 btn.disabled = false;
             });
