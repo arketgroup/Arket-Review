@@ -5,14 +5,10 @@
     <h2>مراجعة الطلب رقم: <span id="oid"></span></h2>
     <div id="content">جاري تحميل البيانات...</div>
     
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        // عرض رقم الطلب
-        document.getElementById('oid').innerText = urlParams.get('OrderID');
-        
-        // عرض الأصناف مباشرة من الرابط
-        const items = urlParams.get('Items');
-        document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + (items ? items : "لا توجد أصناف");
-    </script>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const items = urlParams.get('Items');
+    document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + (items ? items : "لا توجد أصناف.");
+</script>
 </body>
 </html>
