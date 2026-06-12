@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html dir="rtl">
-<head><meta charset="utf-8"><title>نظام أركت - مراجعة الطلبات</title></head>
+<head><meta charset="utf-8"></head>
 <body>
     <h2>مراجعة الطلب رقم: <span id="oid"></span></h2>
-    <div id="content">جاري التحميل...</div>
+    <div id="content">جاري تحميل البيانات...</div>
     
     <script>
         const urlParams = new URLSearchParams(window.location.search);
+        // عرض رقم الطلب
         document.getElementById('oid').innerText = urlParams.get('OrderID');
         
-        // هنا نقوم بفك تشفير البيانات القادمة من الرابط
+        // عرض الأصناف مباشرة من الرابط
         const items = urlParams.get('Items');
-        document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + items;
+        document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + (items ? items : "لا توجد أصناف");
     </script>
 </body>
 </html>
