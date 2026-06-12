@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html dir="rtl">
-<head><meta charset="utf-8"></head>
+<head><meta charset="utf-8"><title>نظام أركت - مراجعة الطلبات</title></head>
 <body>
     <h2>مراجعة الطلب رقم: <span id="oid"></span></h2>
     <div id="content">جاري التحميل...</div>
@@ -9,7 +9,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         document.getElementById('oid').innerText = urlParams.get('OrderID');
         
-        // جلب البيانات من الرابط مباشرة
+        // هنا نقوم بفك تشفير البيانات القادمة من الرابط
         const items = urlParams.get('Items');
         document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + items;
     </script>
