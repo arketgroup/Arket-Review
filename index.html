@@ -7,50 +7,25 @@
     <textarea id="notes" placeholder="اكتب ملاحظاتك هنا..."></textarea><br><br>
     <button onclick="saveNotes()">إرسال الملاحظات</button>
 <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const orderID = urlParams.get('OrderID');
-        document.getElementById('oid').innerText = orderID;
-        
-        const scriptURL = "https://script.google.com/macros/s/AKfycbyBIBqfCpMShbzyMGJ4cVdN8C1nD5esu1CLXa56xRjs5Aydqz_ggtXot_SXKmVHCaw/exec";
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderID = urlParams.get('OrderID');
+    document.getElementById('oid').innerText = orderID;
+    
+    // رابط الـ Web App الخاص بك
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyBIBqfCpMShbzyMGJ4cVdN8C1nD5esu1CLXa56xRjs5Aydqz_ggtXot_SXKmVHCaw/exec";
 
-        // تعديل الجلب ليكون cors
-        fetch(scriptURL + "?OrderID=" + orderID, {
-            method: 'GET',
-            mode: 'cors' // هنا التغيير الجوهري
-        })
-        .then(r => r.json())
+    // استخدام AJAX مع JSONP لتخطي قيود الـ CORS
+    const url = scriptURL + "?OrderID=" + orderID;
+    
+    // سنستخدم وكيل (Proxy) بسيط لجلب البيانات
+    fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(url))
+        .then(response => response.json())
         .then(data => {
-            document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + data.ItemsData;
+            const json = JSON.parse(data.contents);
+            document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + json.ItemsData;
         })
         .catch(err => {
-            console.error(err);
-            document.getElementById('content').innerHTML = "خطأ في جلب البيانات. تأكد من عمل Deploy للسكربت.";
+            document.getElementById('content').innerText = "خطأ في الاتصال بالسيرفر.";
         });
-
-        // دالة الإرسال (تبقى كما هي)
-        function saveNotes() {
-            const notes = document.getElementById('notes').value;
-            if (!notes) { alert("من فضلك اكتب الملاحظات أولاً!"); return; }
-            
-            const btn = document.querySelector('button');
-            btn.innerText = "جاري الحفظ...";
-            btn.disabled = true;
-
-            fetch(scriptURL, {
-                method: "POST",
-                mode: "no-cors", 
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ OrderID: orderID, Notes: notes })
-            })
-            .then(() => {
-                alert("تم حفظ الملاحظات بنجاح!");
-                btn.innerText = "تم الإرسال";
-            })
-            .catch(() => {
-                alert("حدث خطأ، حاول مرة أخرى.");
-                btn.innerText = "إرسال الملاحظات";
-                btn.disabled = false;
-            });
-        }
-    </script>
+</script>
 </body></html>
