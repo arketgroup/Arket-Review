@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html dir="rtl"><head><meta charset="utf-8"><title>نظام أركت - مراجعة الطلبات</title>
-<style>body{font-family:Arial; padding:20px;} textarea{width:100%; height:100px;}</style>
-</head><body>
+<html dir="rtl">
+<head><meta charset="utf-8"></head>
+<body>
     <h2>مراجعة الطلب رقم: <span id="oid"></span></h2>
-    <p id="content">جاري جلب بيانات الطلب...</p>
-    <textarea id="notes" placeholder="اكتب ملاحظاتك هنا..."></textarea><br><br>
-    <button onclick="saveNotes()">إرسال الملاحظات</button>
-<script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const items = urlParams.get('Items');
-    document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + items;
-</script>
-</body></html>
+    <div id="content">جاري التحميل...</div>
+    
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        document.getElementById('oid').innerText = urlParams.get('OrderID');
+        
+        // جلب البيانات من الرابط مباشرة
+        const items = urlParams.get('Items');
+        document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + items;
+    </script>
+</body>
+</html>
