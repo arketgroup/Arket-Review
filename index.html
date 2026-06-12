@@ -8,22 +8,7 @@
     <button onclick="saveNotes()">إرسال الملاحظات</button>
 <script>
     const urlParams = new URLSearchParams(window.location.search);
-    const orderID = urlParams.get('OrderID');
-    document.getElementById('oid').innerText = orderID;
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyBIBqfCpMShbzyMGJ4cVdN8C1nD5esu1CLXa56xRjs5Aydqz_ggtXot_SXKmVHCaw/exec";
-
-    // دالة لاستقبال البيانات (هذه هي الـ Callback)
-    function handleResponse(data) {
-        if (data.ItemsData) {
-            document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + data.ItemsData;
-        } else {
-            document.getElementById('content').innerText = "الطلب غير موجود.";
-        }
-    }
-
-    // إنشاء رابط السكربت مع تمرير اسم الدالة
-    const script = document.createElement('script');
-    script.src = scriptURL + "?OrderID=" + orderID + "&callback=handleResponse";
-    document.body.appendChild(script);
+    const items = urlParams.get('Items');
+    document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + items;
 </script>
 </body></html>
