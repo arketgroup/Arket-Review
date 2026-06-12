@@ -14,20 +14,22 @@
     // رابط الـ Web App الخاص بك
     const scriptURL = "https://script.google.com/macros/s/AKfycbyBIBqfCpMShbzyMGJ4cVdN8C1nD5esu1CLXa56xRjs5Aydqz_ggtXot_SXKmVHCaw/exec";
 
-    // استخدام الوكيل لجلب البيانات
-fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(scriptURL + "?OrderID=" + orderID))
-    .then(response => response.json())
-    .then(data => {
-        const json = JSON.parse(data.contents);
-        console.log("البيانات القادمة من السيرفر:", json); // هذا السطر سيخبرنا بكل شيء
-        
-        // جرب طباعة json.ItemsData مباشرة
-        if (json && json.ItemsData) {
-            document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + json.ItemsData;
-        } else {
-            document.getElementById('content').innerText = "خطأ: البيانات فارغة أو الاسم غير مطابق. تفقد الكونسول.";
-        }
-    });
+   // جلب البيانات مع mode: 'cors'
+fetch(scriptURL + "?OrderID=" + orderID, {
+    method: 'GET',
+    mode: 'cors' 
+})
+.then(r => r.json())
+.then(data => {
+    if (data.ItemsData) {
+        document.getElementById('content').innerHTML = "<b>تفاصيل الطلب:</b> " + data.ItemsData;
+    } else {
+        document.getElementById('content').innerText = "الطلب غير موجود في قاعدة البيانات.";
+    }
+})
+.catch(err => {
+    document.getElementById('content').innerText = "خطأ في الاتصال بالسيرفر. تأكد من عمل Deploy جديد للسكربت.";
+});
         .catch(err => {
             document.getElementById('content').innerText = "خطأ في الاتصال، تأكد من أن السكربت عام (Anyone).";
         });
